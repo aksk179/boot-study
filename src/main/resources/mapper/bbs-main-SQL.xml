@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ksj.bootstudy.mapper.BbsMainMapper">
+
+    <!-- 게시판별 게시글리스트 조회 -->
+    <select id="selectBbsList" parameterType="BbsMainVO" resultType="BbsMainVO">
+        select bbs_id, bbs_no, bbs_title, bbs_wtime, bbs_writer_name, bbs_view_count, (EXTRACT(EPOCH FROM NOW() - bbs_wtime) / 3600) AS new_time
+        from bbs_main
+        where bbs_id = #{bbsId}
+        order by bbs_no desc
+    </select>
+
+    <!-- 게시글 정보 조회 -->
+    <select id="selectBbsInfo" parameterType="BbsMainVO" resultType="BbsMainVO">
+        select bbs_id, bbs_no, bbs_title, bbs_contents
+        from bbs_main
+        where bbs_id = #{bbsId}
+        and bbs_no = #{bbsNo}
+    </select>
+
+    <!-- 게시글 첨부파일 정보 조회 -->
+    <select id="selectBbsAttachList" parameterType="BbsAttachVO" resultType="BbsAttachVO">
+        select bbs_attach_seq, bbs_attach_name, bbs_attach_size, bbs_attach_path
+        from bbs_attach
+        where bbs_id = #{bbsId}
+        and bbs_no = #{bbsNo}
+    </select>
+
+<!--    &lt;!&ndash; 게시글 댓글 정보 조회 &ndash;&gt;-->
+<!--    <select id="selectBbsCmtList" parameterType="BbsCommentVO" resultType="BbsCommentVO">-->
+<!--        select bbs_cmt_seq, bbs_cmt_writer, bbs_cmt_wtime, bbs_comment, bbs_cmt_upseq-->
+<!--        from bbs_comment-->
+<!--        where bbs_id = #{bbsId}-->
+<!--        and bbs_no = #{bbsNo}-->
+<!--        and bbs_cmt_upseq = 0-->
+<!--    </select>-->
+
+    <!-- 게시글 댓글 정보 조회 -->
+    <select id="selectBbsCmtList" parameterType="BbsCommentVO" resultType="BbsCommentVO">
+        WITH RECURSIVE find_cmt(bbs_id, bbs_no, bbs_cmt_seq, bbs_cmt_writer, bbs_cmt_wtime, bbs_comment, bbs_cmt_upseq)
+        AS (
+        -- START_QUERY: 최상위 댓글 찾기
+        SELECT bbs_id, bbs_no, bbs_cmt_seq, bbs_cmt_writer, bbs_cmt_wtime, bbs_comment, bbs_cmt_upseq
+        FROM bbs_comment
+        WHERE 1=1
+        AND bbs_id = #{bbsId}
+        AND bbs_no = #{bbsNo}
+        AND bbs_cmt_upseq = 0
+
+        UNION ALL
+
+        -- REPEAT_QUERY: 답글 찾기
+        SELECT bc.bbs_id, bc.bbs_no, bc.bbs_cmt_seq, bc.bbs_cmt_writer, bc.bbs_cmt_wtime, bc.bbs_comment, bc.bbs_cmt_upseq
+        FROM find_cmt fc
+        INNER JOIN bbs_comment bc
+        ON fc.bbs_cmt_seq = bc.bbs_cmt_upseq -- 부모 댓글-답글 관계
+        AND bc.bbs_id = #{bbsId}                -- 동일 게시글
+        AND bc.bbs_no = #{bbsNo}                   -- 동일 게시글 번호
+        )
+        -- VIEW_QUERY
+        SELECT *
+        FROM find_cmt
+        ORDER BY
+        CASE
+        WHEN bbs_cmt_upseq = 0 THEN bbs_cmt_seq -- 댓글은 그대로 시간순으로 정렬
+        ELSE bbs_cmt_upseq                     -- 답글은 부모 댓글 바로 아래로 정렬
+        END,
+        bbs_cmt_seq
+    </select>
+
+    <!-- 댓글 달기 -->
+    <insert id="createCmt" parameterType="BbsCommentVO">
+        insert into bbs_comment (bbs_id, bbs_no, bbs_cmt_seq, bbs_cmt_writer, bbs_cmt_wtime, bbs_comment, bbs_cmt_upseq) VALUES
+        (#{bbsId}, #{bbsNo}, #{bbsCmtSeq}, #{bbsCmtWriter}, now(), #{bbsComment}, #{bbsCmtUpseq})
+    </insert>
+
+    <!-- 댓글 max seq 조회 -->
+    <select id="selectCmtMaxSeq" parameterType="BbsCommentVO" resultType="BbsCommentVO">
+        select max(bbs_cmt_seq) as bbs_cmt_seq
+        from bbs_comment
+        where bbs_id = #{bbsId}
+        and bbs_no = #{bbsNo}
+    </select>
+
+    <!-- 댓글 조회 -->
+    <select id="selectCmt" parameterType="BbsCommentVO" resultType="BbsCommentVO">
+        select bbs_id, bbs_no, bbs_cmt_seq, bbs_cmt_writer, bbs_cmt_wtime, bbs_comment, bbs_cmt_upseq
+        from bbs_comment
+        where bbs_id = #{bbsId}
+        and bbs_no = #{bbsNo}
+        and bbs_cmt_seq = #{bbsCmtSeq}
+    </select>
+
+    <!-- 게시글 작성 -->
+    <insert id="createBbs" parameterType="BbsMainVO">
+        INSERT INTO bbs_main (bbs_id, bbs_no, bbs_title, bbs_contents, bbs_wtime, bbs_writer_name, bbs_writer_id) VALUES
+        (#{bbsId}, #{bbsNo}, #{bbsTitle}, #{bbsContents}, now(), #{bbsWriterName}, #{bbsWriterId})
+    </insert>
+
+    <select id="selectMaxBbsNo" parameterType="BbsMainVO" resultType="BbsMainVO">
+        select max(bbs_no) bbs_no
+        from bbs_main
+        where bbs_id = #{bbsId}
+    </select>
+</mapper>

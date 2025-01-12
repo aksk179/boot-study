@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<style>
+    .reply-indicator {
+        position: absolute; /* 절대 위치 지정 */
+        left: 0; /* 부모의 왼쪽에 위치 */
+        top: 0; /* 상단에 위치 */
+        font-size: 1.2rem; /* 필요에 따라 크기 조정 */
+        color: #6c757d; /* 색상 조정 */
+    }
+</style>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="container mt-5">
+<form th:action="@{/manager/bbs_master_update}" method="post" class="needs-validation" novalidate>
+    <!-- 게시글 작성 -->
+    <div class="mb-4">
+        <label for="title"><b>제목:</b></label>
+        <input type="text" id="title" name="title" class="form-control" th:value="${bbs.bbsTitle}">
+    </div>
+
+    <div class="mb-4" th:if="${masterVO.bbsFileYn == 'Y'}">
+        <label><b>첨부파일:</b></label>
+        <div>
+            <ul>
+                <!-- 첨부파일 목록 -->
+                <li th:each="file : ${bbsAttachList}">
+                    <a th:href="@{'${file.bbsAttachPath}'}" th:text="${file.bbsAttachName}" download></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <label><b>내용:</b></label>
+        <textarea class="form-control" id="contents" name="contents" rows="10" th:text="${bbs.bbsContents}"></textarea>
+    </div>
+
+    <!-- 저장 버튼 -->
+    <div class="d-flex justify-content-center">
+        <a href="#" th:onclick="'history.back();'" class="btn btn-secondary">취소</a>&nbsp;&nbsp;
+        <button type="button" class="btn btn-primary" onclick="save('CREATE')"><span th:text="${btnName}">등록</span></button>
+    </div>
+</form>
+</div>
+<script>
+    function save(mode) {
+        var bbsTitle = $('#title').val();
+        var bbsContents = $('#contents').val();
+
+        var param = {};
+        param.bbsId = '[[${bbs.bbsId}]]';
+        param.bbsTitle = bbsTitle;
+        param.bbsContents = bbsContents;
+        console.log(param);
+
+        var url = '';
+        if (mode === 'CREATE') {
+            url = '/bbs/create_bbs.do';
+        }
+<!--        else {-->
+<!--            url = '/bbs/update_bbs.do';-->
+<!--        }-->
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(param),
+            success: function(result) {
+                if (result.code === "Y") {
+                    alert("저장이 완료되었습니다.");
+                    location.href = "/bbs/bbs_main.page/[[${bbs.bbsId}]]"; // 성공 시 리다이렉트
+                } else {
+                    alert("저장에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function() {
+                alert("저장 중 오류가 발생했습니다.");
+            }
+        })
+    }
+</script>
+</body>
+</html>

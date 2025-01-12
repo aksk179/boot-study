@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<style>
+    .reply-indicator {
+        position: absolute; /* 절대 위치 지정 */
+        left: 0; /* 부모의 왼쪽에 위치 */
+        top: 0; /* 상단에 위치 */
+        font-size: 1.2rem; /* 필요에 따라 크기 조정 */
+        color: #6c757d; /* 색상 조정 */
+    }
+</style>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="container mt-5">
+    <!-- 게시글 상세 -->
+    <div class="mb-4">
+        <label for="title"><b>제목:</b></label>
+        <input type="text" id="title" name="title" class="form-control" th:value="${bbs.bbsTitle}" readonly>
+    </div>
+
+    <div class="mb-4" th:if="${masterVO.bbsFileYn == 'Y'}">
+        <label><b>첨부파일:</b></label>
+        <div>
+            <ul>
+                <!-- 첨부파일 목록 -->
+                <li th:each="file : ${bbsAttachList}">
+                    <a th:href="@{'${file.bbsAttachPath}'}" th:text="${file.bbsAttachName}" download></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <label><b>내용:</b></label>
+        <textarea class="form-control" rows="10" readonly th:text="${bbs.bbsContents}"></textarea>
+    </div>
+
+    <button class="btn btn-secondary" type="button" th:data-index="${bbs.bbsId}" onclick="goList(this.getAttribute('data-index'))">목록</button>
+
+    <!-- 댓글 리스트 -->
+    <div class="mt-5" id="cmt-list" th:if="${masterVO.bbsReplyYn == 'Y'}">
+        <h5>댓글</h5>
+        <div th:each="cmt : ${bbsCmtList}" th:id="'cmt-' + ${cmt.bbsCmtSeq}" th:class="${cmt.bbsCmtUpseq == 0} ? '' : 'ms-5'">
+            <div class="border-bottom mb-2 pb-2">
+                <p><b th:text="${cmt.bbsCmtWriter}">작성자</b></p>
+                <p th:text="${cmt.bbsComment}">댓글 내용</p>
+                <p class="text-muted" th:text="${cmt.bbsCmtWtime}"></p>
+                <button class="btn btn-sm btn-outline-primary" th:onclick="'replyView(' + ${cmt.bbsCmtSeq} + ')'" th:style="${cmt.bbsCmtUpseq == 0} ? 'display:block;' : 'display:none;'">답글</button>
+            </div>
+            <div th:id="'replyForm' + ${cmt.bbsCmtSeq}" style="display:none;">
+                <!-- 답글 입력 -->
+                <h5>답글 작성</h5>
+                <form action="" method="post">
+                    <input type="hidden" th:data-seq="${cmt.bbsCmtSeq}">
+                    <textarea class="form-control mb-2" id="cmtReply" name="cmtReply" rows="3" placeholder="답글 내용을 입력하세요"></textarea>
+                    <button class="btn btn-primary" type="button" onclick="createReply(this)">등록</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 댓글 입력 -->
+    <div class="mt-4" th:if="${masterVO.bbsReplyYn == 'Y'}">
+        <h5>댓글 작성</h5>
+        <form action="" method="post">
+            <textarea class="form-control mb-2" id="bbsComment" name="bbsComment" rows="3" placeholder="댓글 내용을 입력하세요"></textarea>
+            <button class="btn btn-primary" type="button" onclick="createCmt()">등록</button>
+        </form>
+    </div>
+</div>
+<script>
+    function replyView(cmtSeq) {
+        const replyForm = document.getElementById('replyForm' + cmtSeq);
+
+        if (replyForm.style.display === 'none' || replyForm.style.display === '') {
+            replyForm.style.display = 'block';
+        } else {
+            replyForm.style.display = 'none';
+        }
+
+        $('#cmtReply').val('');
+    }
+
+    function goList(id) {
+        var url = '';
+        url = '/bbs/bbs_main.page/' + id;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function() {
+                location.href = url;
+            },
+            error: function() {
+                alert("저장 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
+    function createCmt() {
+        var bbsComment = $('#bbsComment').val();
+
+        var param  = {};
+        param.bbsId = '[[${bbs.bbsId}]]';
+        param.bbsNo = [[${bbs.bbsNo}]];
+        param.bbsComment = bbsComment;
+        param.bbsCmtUpseq = 0;
+        console.log(param);
+
+        $.ajax({
+            url: '/bbs/createCmt.do',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(param),
+            success: function(result) {
+                if (result.code === "Y") {
+                    var newCommentHtml = '<div class="border-bottom mb-2 pb-2"><p><b>' + result.newBbsCmtVO.bbsCmtWriter + '</b></p><p>' + result.newBbsCmtVO.bbsComment +
+                    '</p><p class="text-muted">' + result.newBbsCmtVO.bbsCmtWtime + '</p><button class="btn btn-sm btn-outline-primary" th:onclick="`replyView(' + result.newBbsCmtVO.bbsCmtSeq + ')`" th:style="' + result.newBbsCmtVO.bbsCmtUpseq + '== 0} ? `display:block;` : `display:none;`">답글</button></div>';
+
+                    // `#cmt-list`에 새 댓글 추가
+                    $('#cmt-list').append(newCommentHtml);
+                    $('#bbsComment').val('');
+                } else {
+                    alert("댓글등록에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function() {
+                alert("댓글등록 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
+    function createReply(button) {
+        var cmtReply = $(button).closest('div').find('#cmtReply').val();
+        var dataSeq = $(button).closest('div').find('[data-seq]').data('seq');
+
+        var param  = {};
+        param.bbsId = '[[${bbs.bbsId}]]';
+        param.bbsNo = [[${bbs.bbsNo}]];
+        param.bbsComment = cmtReply;
+        param.bbsCmtUpseq = dataSeq;
+<!--        console.log(param);-->
+
+
+        $.ajax({
+            url: '/bbs/createReply.do',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(param),
+            success: function(result) {
+                if (result.code === "Y") {
+                    var newReplyHtml = '<div class="border-bottom mb-2 pb-2"><p><b>' + result.newReplyVO.bbsCmtWriter + '</b></p><p>' + result.newReplyVO.bbsComment + '</p><p class="text-muted">' + result.newReplyVO.bbsCmtWtime + '</p></div>';
+
+                    // 특정 댓글의 마지막 답글 찾기
+                    var lastReply = $(`#cmt-${dataSeq}`).nextAll(`[id^="cmt-"]`).filter(function() {
+                        return $(this).hasClass('ms-5'); // 답글만 필터링
+                    }).last();
+                    console.log(lastReply);
+
+                    // 마지막 답글 뒤에 추가하거나, 답글이 없으면 부모 댓글 바로 뒤에 추가
+                    if (lastReply.length > 0) {
+                        lastReply.after(newReplyHtml);
+                    } else {
+                        $(`#${dataSeq}`).after(newReplyHtml);
+                    }
+
+                    $(button).closest('div').find('#cmtReply').val('');
+                } else {
+                    alert("답글등록에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function() {
+                alert("답글등록 중 오류가 발생했습니다.");
+            }
+        });
+    }
+</script>
+</body>
+</html>

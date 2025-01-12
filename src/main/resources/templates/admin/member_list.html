@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원목록조회</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* 제목과 버튼의 수직 정렬 */
+            margin: 20px auto;
+            width: 80%;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px; /* 버튼 사이 여백 */
+        }
+        .top-bar button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .top-bar button:hover {
+            background-color: #0056b3;
+        }
+        .edit-button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .edit-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <th:block th:replace="/fragments/header"></th:block>
+    <h1 class="mb-4 text-center"><span th:text="${masterVO.bbsName}">공지사항</span></h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>cell_phone</th>
+            <th>Email</th>
+            <th>zip_code</th>
+            <th>address</th>
+            <th>status</th>
+            <th>수정</th>
+<!--            <th>삭제</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Thymeleaf 문법으로 데이터 반복 -->
+        <tr th:each="member : ${memberList}">
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.name}"></td>
+            <td th:text="${member.cellPhone}"></td>
+            <td th:text="${member.email}"></td>
+            <td th:text="${member.zipCode}"></td>
+            <td th:text="${member.address}"></td>
+            <td th:text="${member.status}"></td>
+            <td>
+                <button class="edit-button"
+                        th:onclick="|location.href='@{/admin/update_member.page(id=${member.id})}'|">수정</button>
+            </td>
+<!--            <td>-->
+<!--                <button class="delete-button"-->
+<!--                        th:onclick="|location.href='@{/delete_member.page(id=${member.id})}'|">삭제</button>-->
+<!--            </td>-->
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .register-container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        .register-container a {
+            display: block;
+            margin-top: 15px;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .register-container a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        td:first-child {
+            text-align: right;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .check-btn {
+            background-color: #28a745;
+        }
+        .check-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="register-container">
+    <h1>회원가입</h1>
+    <form id="registerForm" th:object="${member}" th:action="@{/login/member_register.do}" th:method="post">
+        <table>
+            <tr>
+                <td>아이디</td>
+                <td>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="id" name="id" th:field="*{id}" required>
+                        <button type="button" class="check-btn" onclick="checkDuplicate()">중복체크</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>비밀번호</td>
+                <td><input type="password" id="passwd" name="passwd" th:field="*{passwd}" required></td>
+            </tr>
+            <tr>
+                <td>이름</td>
+                <td><input type="text" id="name" name="name" th:field="*{name}" required></td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td><input type="text" id="cellPhone" name="cellPhone" th:field="*{cellPhone}" required></td>
+            </tr>
+            <tr>
+                <td>이메일</td>
+                <td><input type="text" id="email" name="email" th:field="*{email}" required></td>
+            </tr>
+            <tr>
+                <td>우편번호</td>
+                <td><input type="text" id="zipCode" name="zipCode" th:field="*{zipCode}"></td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td><input type="text" id="address" name="address" th:field="*{address}" required></td>
+            </tr>
+        </table>
+        <button type="button" onclick="register()">가입하기</button>
+    </form>
+    <a th:href="@{/login/member_login.page}">로그인</a>
+</div>
+<script>
+    var isDue = 'NONE';
+
+    function checkDuplicate() {
+        var id = $('#id').val();
+        console.log("id : " + id);
+
+        if (id == "") {
+            alert("id를 입력해주세요.");
+        } else {
+            $.ajax({
+                url: '/login/check_duplicate.do', // 서버의 컨트롤러 URL
+                type: 'POST',
+                data: { id: id }, // 요청에 포함할 데이터
+                success: function(isDuplicate) {
+                    isDue = isDuplicate;
+                    if (isDuplicate == 'Y') {
+                        alert("이미 사용 중인 아이디입니다.");
+                    } else {
+                        alert("사용 가능한 아이디입니다.");
+                    }
+                },
+                error: function() {
+                    alert("중복 체크 중 오류가 발생했습니다.");
+                }
+            });
+        }
+    }
+
+    function register() {
+        var isValid = true;
+
+        if (isDue == 'NONE') {
+            alert("아이디 중복체크를 해주세요.");
+            return;
+        } else if (isDue == 'Y') {
+            alert("이미 사용 중인 아이디입니다. 새로운 아이디로 시도해주세요.");
+            return;
+        } else {
+            // 모든 필드를 검사
+            $('#registerForm input[required]').each(function() {
+                if (!$(this).val()) {
+                    alert("모든 필드를 입력해주세요.");
+                    isValid = false;
+                    return false; // 루프 중단
+                }
+            });
+        }
+
+        if (isValid) {
+            registerForm.submit();
+        }
+    }
+</script>
+</body>
+</html>

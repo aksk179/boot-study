@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 수정</title>
+</head>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">게시판 <span th:text="${title}">등록</span></h1>
+    <form th:action="@{/manager/bbs_master_update}" method="post" class="needs-validation" novalidate>
+        <!-- 게시판명 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsName" class="col-sm-3 col-form-label text-end">게시판명</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="bbsName" name="bbsName" th:value="${bbsVO.bbsName}" required>
+                <input type="hidden" class="form-control" id="bbsId" name="bbsId" th:value="${bbsVO.bbsId}">
+                <div class="invalid-feedback">게시판명을 입력해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 댓글 기능 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsReplyYn" class="col-sm-3 col-form-label text-end">댓글 기능</label>
+            <div class="col-sm-9">
+                <select class="form-select" id="bbsReplyYn" name="bbsReplyYn" required>
+                    <option th:value="Y" th:selected="${bbsVO.bbsReplyYn == 'Y'}">활성화</option>
+                    <option th:value="N" th:selected="${bbsVO.bbsReplyYn == 'N'}">비활성화</option>
+                </select>
+                <div class="invalid-feedback">댓글 기능 여부를 선택해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 파일 업로드 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsFileYn" class="col-sm-3 col-form-label text-end">파일 업로드</label>
+            <div class="col-sm-9">
+                <select class="form-select" id="bbsFileYn" name="bbsFileYn" required>
+                    <option th:value="Y" th:selected="${bbsVO.bbsFileYn == 'Y'}">허용</option>
+                    <option th:value="N" th:selected="${bbsVO.bbsFileYn == 'N'}">비허용</option>
+                </select>
+                <div class="invalid-feedback">파일 업로드 여부를 선택해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 업로드 크기 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsFileSize" class="col-sm-3 col-form-label text-end">업로드 크기 (MB)</label>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" id="bbsFileSize" name="bbsFileSize" min="1" th:value="${bbsVO.bbsFileSize}" required>
+                <div class="invalid-feedback">업로드 크기를 입력해주세요 (1MB 이상).</div>
+            </div>
+        </div>
+
+        <!-- new 마크 시간 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsNewHour" class="col-sm-3 col-form-label text-end">new 마크 시간 (시간)</label>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" id="bbsNewHour" name="bbsNewHour" min="0" th:value="${bbsVO.bbsNewHour}" required>
+                <div class="invalid-feedback">new 마크 시간을 입력해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 작성자 정보 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsWriterViewYn" class="col-sm-3 col-form-label text-end">작성자 정보</label>
+            <div class="col-sm-9">
+                <select class="form-select" id="bbsWriterViewYn" name="bbsWriterViewYn" required>
+                    <option th:value="Y" th:selected="${bbsVO.bbsWriterViewYn == 'Y'}">표시</option>
+                    <option th:value="N" th:selected="${bbsVO.bbsWriterViewYn == 'N'}">비표시</option>
+                </select>
+                <div class="invalid-feedback">작성자 정보 표시 여부를 선택해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 일반 사용자 글쓰기 허용 -->
+        <div class="row mb-3 align-items-center">
+            <label for="bbsFileYn" class="col-sm-3 col-form-label text-end">일반 사용자 글쓰기 허용</label>
+            <div class="col-sm-9">
+                <select class="form-select" id="bbsUserWriteYn" name="bbsUserWriteYn" required>
+                    <option th:value="Y" th:selected="${bbsVO.bbsUserWriteYn == 'Y'}">허용</option>
+                    <option th:value="N" th:selected="${bbsVO.bbsUserWriteYn == 'N'}">비허용</option>
+                </select>
+                <div class="invalid-feedback">일반 사용자 글쓰기 허용 여부를 선택해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div class="d-flex justify-content-center">
+            <a href="#" th:onclick="'history.back();'" class="btn btn-secondary">취소</a>&nbsp;&nbsp;
+            <button type="button" th:if="${bbsId == '' || bbsId == null}"     class="btn btn-primary" onclick="save('CREATE')"><span th:text="${btnName}">등록</span></button>
+            <button type="button" th:unless="${bbsId == '' || bbsId == null}" class="btn btn-primary" onclick="save('UPDATE')"><span th:text="${btnName}">수정</span></button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    // Bootstrap의 폼 유효성 검사를 위한 JavaScript
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('button', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    function save(mode) {
+        var bbsId = $('#bbsId').val();
+        var bbsName = $('#bbsName').val();
+        var bbsReplyYn = $('#bbsReplyYn').val();
+        var bbsFileYn = $('#bbsFileYn').val();
+        var bbsFileSize = $('#bbsFileSize').val();
+        var bbsNewHour = $('#bbsNewHour').val();
+        var bbsWriterViewYn = $('#bbsWriterViewYn').val();
+        var bbsUserWriteYn = $('#bbsUserWriteYn').val();
+
+        var param = {};
+        param.bbsId = bbsId;
+        param.bbsName = bbsName;
+        param.bbsReplyYn = bbsReplyYn;
+        param.bbsFileYn = bbsFileYn;
+        param.bbsFileSize = bbsFileSize;
+        param.bbsNewHour = bbsNewHour;
+        param.bbsWriterViewYn = bbsWriterViewYn;
+        param.bbsUserWriteYn = bbsUserWriteYn;
+        console.log(param);
+
+        var url = '';
+        if (mode === 'CREATE') {
+            url = '/manager/create_bbs_master.do';
+        } else {
+            url = '/manager/update_bbs_master.do';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(param),
+            success: function(result) {
+                if (result.code === "Y") {
+                    alert("저장이 완료되었습니다.");
+                    location.href = "/manager/bbs_master_list.page"; // 성공 시 리다이렉트
+                } else {
+                    alert("저장에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function() {
+                alert("저장 중 오류가 발생했습니다.");
+            }
+        })
+    }
+</script>
+</body>
+</html>

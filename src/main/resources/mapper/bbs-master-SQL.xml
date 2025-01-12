@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ksj.bootstudy.mapper.BbsMasterMapper">
+
+    <!-- 게시판 관리 목록 조회 -->
+    <select id="selectBbsMasterListPage" parameterType="BbsMasterVO" resultType="BbsMasterVO">
+        select bbs_id, bbs_name, bbs_reply_yn, bbs_file_yn, bbs_file_size, bbs_new_hour, bbs_writer_view_yn, bbs_user_write_yn
+        from bbs_master
+        order by bbs_id
+    </select>
+
+    <!-- 게시판 정보 조회 -->
+    <select id="selectBbsMasterInfo" parameterType="BbsMasterVO" resultType="BbsMasterVO">
+        select bbs_id, bbs_name, bbs_reply_yn, bbs_file_yn, bbs_file_size, bbs_new_hour, bbs_writer_view_yn, bbs_user_write_yn
+        from bbs_master
+        where bbs_id = #{bbsId}
+    </select>
+
+    <!-- 게시판 정보 수정 -->
+    <update id="updateBbsMasterOne" parameterType="BbsMasterVO">
+        UPDATE bbs_master
+        <set>
+            <if test="bbsId != null">
+                bbs_id = #{bbsId},
+            </if>
+            <if test="bbsName != null">
+                bbs_name = #{bbsName},
+            </if>
+            <if test="bbsReplyYn != null">
+                bbs_reply_yn = #{bbsReplyYn},
+            </if>
+            <if test="bbsFileYn != null">
+                bbs_file_yn = #{bbsFileYn},
+            </if>
+            <if test="bbsFileSize != null">
+                bbs_file_size = #{bbsFileSize},
+            </if>
+            <if test="bbsNewHour != null">
+                bbs_new_hour = #{bbsNewHour},
+            </if>
+            <if test="bbsWriterViewYn != null">
+                bbs_writer_view_yn = #{bbsWriterViewYn},
+            </if>
+            <if test="bbsUserWriteYn != null">
+                bbs_user_write_yn = #{bbsUserWriteYn},
+            </if>
+        </set>
+        WHERE bbs_id = #{bbsId}
+    </update>
+
+    <!-- 게시판 등록 -->
+    <insert id="createBbsMaster" parameterType="BbsMasterVO">
+        INSERT INTO bbs_master (bbs_id, bbs_name, bbs_reply_yn, bbs_file_yn, bbs_file_size, bbs_new_hour, bbs_writer_view_yn, bbs_user_write_yn) VALUES
+        (#{bbsId}, #{bbsName}, #{bbsReplyYn}, #{bbsFileYn}, #{bbsFileSize}, #{bbsNewHour}, #{bbsWriterViewYn}, #{bbsUserWriteYn})
+    </insert>
+
+    <!-- 게시판 max key 조회 -->
+    <select id="selectBbsMaxKey" resultType="BbsMasterVO">
+        select max(bbs_id) as bbs_id
+        from bbs_master
+    </select>
+
+    <!-- 게시판 삭제 -->
+    <delete id="deleteBbsMaster" parameterType="BbsMasterVO">
+        delete from bbs_master
+        where bbs_id = #{bbsId}
+    </delete>
+</mapper>

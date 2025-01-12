@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 관리 목록 조회</title>
+</head>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+
+<div class="container mt-4">
+    <h1 class="mb-4 text-center">게시판 관리</h1>
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-sm btn-primary" type="button" th:onclick="location.href='/manager/create_bbs_master.page'">게시판 등록</button>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light text-center">
+        <tr>
+            <th>게시판명</th>
+            <th>댓글기능</th>
+            <th>파일업로드</th>
+            <th>업로드크기</th>
+            <th>new마크</th>
+            <th>작성자 정보</th>
+            <th>일반사용자 글쓰기 허용</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 데이터 반복 -->
+        <tr th:each="bbs : ${bbsMasterList}">
+            <td th:text="${bbs.bbsName}"></td>
+            <td th:text="${bbs.bbsReplyYn}"></td>
+            <td th:text="${bbs.bbsFileYn}"></td>
+            <td th:text="${#strings.append(bbs.bbsFileSize, 'MB')}"></td>
+            <td th:text="${#strings.append(bbs.bbsNewHour, 'h')}"></td>
+            <td th:text="${bbs.bbsWriterViewYn}"></td>
+            <td th:text="${bbs.bbsUserWriteYn}"></td>
+            <td class="text-center">
+                <a th:href="@{'/manager/create_bbs_master.page/' + ${bbs.bbsId}}" class="btn btn-sm btn-primary">수정</a>
+                <a class="btn btn-sm btn-danger" th:attr="data-bbs-id=${bbs.bbsId}" onclick="deleteBbsMaster(this)">삭제</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    function deleteBbsMaster(element) {
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+
+        const bbsId = element.getAttribute("data-bbs-id");
+        var param = {};
+        param.bbsId = bbsId;
+
+        $.ajax({
+            url: '/manager/delete_bbs_master.do',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(param),
+            success: function(result) {
+                if (result.code === "Y") {
+                    alert("삭제가 완료되었습니다.");
+                    location.href = "/manager/bbs_master_list.page"; // 성공 시 리다이렉트
+                } else {
+                    alert("삭제에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function() {
+                alert("삭제 중 오류가 발생했습니다.");
+            }
+        });
+    }
+</script>
+</body>
+</html>
