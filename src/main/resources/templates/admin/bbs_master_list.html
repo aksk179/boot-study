@@ -26,7 +26,7 @@
             <th>작업</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
         <!-- 데이터 반복 -->
         <tr th:each="bbs : ${bbsMasterList}">
             <td th:text="${bbs.bbsName}"></td>
@@ -36,7 +36,7 @@
             <td th:text="${#strings.append(bbs.bbsNewHour, 'h')}"></td>
             <td th:text="${bbs.bbsWriterViewYn}"></td>
             <td th:text="${bbs.bbsUserWriteYn}"></td>
-            <td class="text-center">
+            <td>
                 <a th:href="@{'/manager/create_bbs_master.page/' + ${bbs.bbsId}}" class="btn btn-sm btn-primary">수정</a>
                 <a class="btn btn-sm btn-danger" th:attr="data-bbs-id=${bbs.bbsId}" onclick="deleteBbsMaster(this)">삭제</a>
             </td>
@@ -44,6 +44,7 @@
         </tbody>
     </table>
 </div>
+</body>
 <script>
     function deleteBbsMaster(element) {
         if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -71,5 +72,4 @@
         });
     }
 </script>
-</body>
 </html>

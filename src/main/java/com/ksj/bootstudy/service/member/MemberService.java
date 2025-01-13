@@ -18,4 +18,6 @@ public interface MemberService {
     public String chkPasswd(MemberVO memberVO);
 
     public String loginMember(MemberVO memberVO);
+
+    public void deleteMember(MemberVO memberVO);
 }

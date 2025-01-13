@@ -310,6 +310,7 @@ if (mode === 'CREATE') {
   </dependency>
   ```
 3. File > Settings > Advanced Settings > Allow auto-make to start even if developed application is currently running 활성화
+4. File > Settings > Build, Execution, Deployment > Compiler > Build project automatically 체크
 
 * 게시글 기능 DB 설계 및 생성완료 PPT참고
 
@@ -405,5 +406,10 @@ Role findByRoleNameContainsIgnoreCase (String roleName);  ==> where upper(name) 
 controller -> service -> mapper -> sql                    --> 기존
                       -> reposotory -> model -> Dialect   --> jpa
 ```
-
 * 테이블 생성하지 않아도 실행하면 테이블 만들어져 있음..
+
+## 1.14 정리
+* 회원 수정화면-권한 부여 추가, 메뉴 목록, 등록, 상세등록 화면 추가
+* 프론트단에서 쓰려고 추출해놓고 서버사이드에서 값 가져옴..
+  * 막 쓰지 말고 구별해서 제대로 쓸 것
+* pagecontroller 어떻게 하면 더 깔끔하게 쓸 것인지 고민해보기

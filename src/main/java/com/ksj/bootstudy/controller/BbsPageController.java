@@ -1,7 +1,9 @@
 package com.ksj.bootstudy.controller;
 
+import com.ksj.bootstudy.model.Menu;
 import com.ksj.bootstudy.service.bbs.BbsMainService;
 import com.ksj.bootstudy.service.bbs.BbsMasterService;
+import com.ksj.bootstudy.service.menu.MenuService;
 import com.ksj.bootstudy.vo.BbsAttachVO;
 import com.ksj.bootstudy.vo.BbsCommentVO;
 import com.ksj.bootstudy.vo.BbsMainVO;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
-public class PageController {
+public class BbsPageController {
 
     @Autowired
     BbsMasterService bbsMasterService;
@@ -25,22 +27,22 @@ public class PageController {
     @Autowired
     BbsMainService bbsMainService;
 
-    @RequestMapping(value = "/{dirPath}/{pageName}.page/{bbsId}/{bbsNo}")
-    public String dynamicPage(@PathVariable("dirPath") String dirPath, @PathVariable("pageName") String pageName, @PathVariable("bbsId") String bbsId, @PathVariable("bbsNo") int bbsNo, Model model) {
+    @RequestMapping(value = "/bbs/{pageName}.page/{bbsId}/{bbsNo}")
+    public String dynamicPage(@PathVariable("pageName") String pageName, @PathVariable("bbsId") String bbsId, @PathVariable("bbsNo") int bbsNo, Model model) {
         checkModel(pageName, model, bbsId, bbsNo);
-        return "/" + dirPath + "/" + pageName;
+        return "/bbs/" + pageName;
     }
 
-    @RequestMapping(value = "/{dirPath}/{pageName}.page/{bbsId}")
-    public String dynamicPage(@PathVariable("dirPath") String dirPath, @PathVariable("pageName") String pageName, @PathVariable("bbsId") String bbsId, Model model) {
+    @RequestMapping(value = "/bbs/{pageName}.page/{bbsId}")
+    public String dynamicPage(@PathVariable("pageName") String pageName, @PathVariable("bbsId") String bbsId, Model model) {
         checkModel(pageName, model, bbsId, 0);
-        return "/" + dirPath + "/" + pageName;
+        return "/bbs/" + pageName;
     }
 
-    @RequestMapping(value = "/{dirPath}/{pageName}.page")
-    public String dynamicPage(@PathVariable("dirPath") String dirPath, @PathVariable("pageName") String pageName, Model model) {
+    @RequestMapping(value = "/bbs/{pageName}.page")
+    public String dynamicPage(@PathVariable("pageName") String pageName, Model model) {
         checkModel(pageName, model, "", 0);
-        return "/" + dirPath + "/" + pageName;
+        return "/bbs/" + pageName;
     }
 
     @RequestMapping(value = "/{pageName}.page")

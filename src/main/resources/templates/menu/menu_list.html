@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메뉴 목록 화면</title>
+</head>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="container mt-4">
+    <h1 class="mb-4 text-center"><span th:text="${title}">d</span></h1>
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-sm btn-primary" type="button" th:onclick="createMenu()">메뉴 등록</button>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light text-center">
+        <tr>
+            <th>번호</th>
+            <th>메뉴ID</th>
+            <th>메뉴명</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        <!-- 데이터 반복 -->
+        <tr th:each="menu : ${menuList}"
+            th:attr="data-menu-id=${menu.id}, data-menu-menuId=${menu.menuId}" style="cursor: pointer;">
+            <td th:text="${menu.id}"><input type="hidden" th:value="${menu.id}"></td>
+            <td th:text="${menu.menuId}"></td>
+            <td th:text="${menu.menuName}"></td>
+            <td>
+                <button class="btn btn-sm btn-primary" th:attr="data-menu-id=${menu.id}" onclick="save('createMenuDetail', this)">상세등록</button>
+                <button class="btn btn-sm btn-primary" th:attr="data-menu-id=${menu.id}" onclick="save('updateMenu', this)">수정</button>
+                <button class="btn btn-sm btn-danger" th:attr="data-menu-id=${menu.id}" onclick="save('deleteMenu', this)">삭제</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+    function createMenu() {
+        location.href = '/menu/create_menu.page';
+    }
+
+    function save(mode, button) {
+        const tr = button.closest('tr'); // 클릭된 버튼의 상위 tr을 찾음
+        const id = tr.getAttribute('data-menu-id'); // 해당 tr의 data-menu-id 가져오기
+        console.log(id);
+
+        if (mode === 'createMenuDetail') {
+            location.href = `/menu/create_menu_detail.page/`+id;
+        } else if (mode === 'updateMenu') {
+            location.href = `/menu/create_menu.page/${id}`;
+        } else {
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            location.href = `/menu/delete_menu/${id}';
+        }
+    }
+
+    function createBbs() {
+        const rows = document.querySelectorAll('tr[data-bbs-id]');
+        rows.forEach(function (dataset) {
+            const bbsId = dataset.getAttribute('data-bbs-id');
+            console.log(bbsId);
+            location.href = `/bbs/create_bbs.page/${bbsId}`;
+        });
+    }
+</script>
+</html>

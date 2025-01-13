@@ -7,14 +7,14 @@
 
     <!-- 회원목록조회 -->
     <select id="selectMemberList" parameterType="MemberVO" resultType="MemberVO">
-        select id, name, cell_phone, email, zip_code, address, status
+        select id, name, cell_phone, email, zip_code, address, status, role
         from member
         order by id asc
     </select>
 
     <!-- 회원조회 -->
     <select id="selectMemberOne" parameterType="MemberVO" resultType="MemberVO">
-        select id, name, cell_phone, email, zip_code, address, status
+        select id, name, cell_phone, email, zip_code, address, status, role
         from member
         where id = #{id}
     </select>
@@ -57,6 +57,9 @@
             <if test="status != null">
                 status = #{status},
             </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
         </set>
         WHERE id = #{id}
     </update>
@@ -89,4 +92,10 @@
         from member
         where id = #{id}
     </select>
+
+    <!-- 회원 삭제 -->
+    <delete id="deleteMember" parameterType="MemberVO">
+        delete from member
+        where id = #{id}
+    </delete>
 </mapper>

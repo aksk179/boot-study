@@ -94,12 +94,12 @@
             </tr>
             <tr>
                 <th>새 비밀번호</th>
-                <td colspan="2"><input type="password" id="newPasswd" name="newPasswd" required disabled></td>
+                <td colspan="2"><input type="password" id="newPasswd" name="newPasswd" disabled></td>
             </tr>
             <tr>
                 <th>새 비밀번호 확인</th>
                 <td colspan="2">
-                    <input type="password" id="passwdChk" name="passwdChk" required disabled>
+                    <input type="password" id="passwdChk" name="passwdChk" disabled>
                     <div class="pwd-success" id="pwd-success">비밀번호가 일치합니다.</div>
                     <div class="pwd-fail" id="pwd-fail">비밀번호가 일치하지 않습니다.</div>
                 </td>
@@ -125,6 +125,16 @@
                 <td colspan="2"><input type="text" id="address" name="address" th:field="*{address}" required></td>
             </tr>
             <tr>
+                <th>권한</th>
+                <td colspan="2">
+                    <select id="role" name="role" th:field="*{role}">
+                        <option th:value="USER">USER</option>
+                        <option th:value="ADMIN">ADMIN</option>
+                        <option th:value="MANAGER">MANAGER</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="3" class="center">
                     <button type="button" onclick="update()">수정하기</button>
                 </td>
@@ -147,6 +157,7 @@
             success: function(isPasswd) {
                 if (isPasswd=='Y') {
                     alert("기존 비밀번호가 맞습니다.");
+                    isDue = 'Y';
                     $('#newPasswd').prop('disabled', false);
                     $('#passwdChk').prop('disabled', false);
                 } else {
@@ -182,7 +193,10 @@
     });
 
     function update() {
-        if (isDue == 'N') {
+        if (isDue == 'NONE') {
+            alert("비밀번호 인증을 해야 수정 할 수 있습니다.");
+            return;
+        } else if (isDue == 'N') {
             alert("비밀번호가 일치하지 않습니다.");
             return;
         }

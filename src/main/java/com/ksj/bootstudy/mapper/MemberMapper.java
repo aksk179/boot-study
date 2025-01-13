@@ -24,4 +24,6 @@ public interface MemberMapper {
     public MemberVO selectMemberUuid(MemberVO memberVO);
 
     public MemberVO selectMemberPasswd(MemberVO memberVO);
+
+    public void deleteMember(MemberVO memberVO);
 }

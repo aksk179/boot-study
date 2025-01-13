@@ -38,6 +38,7 @@
         </tbody>
     </table>
 </div>
+</body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('tr[data-bbs-id][data-bbs-no]').forEach(function (row) {
@@ -54,9 +55,8 @@
         rows.forEach(function (dataset) {
             const bbsId = dataset.getAttribute('data-bbs-id');
             console.log(bbsId);
-            location.href = `/bbs/create_bbs.page/${bbsId}`;
+            location.href = `/bbs/create_bbs.page/` + bbsId;
         });
     }
 </script>
-</body>
 </html>

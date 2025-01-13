@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -43,5 +45,19 @@ public class MemberRestController {
         } else {
             return ResponseEntity.ok("isStatusN");
         }
+    }
+
+    @RequestMapping(value = "/admin/delete_member.do", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, String>> deleteMember(@RequestBody MemberVO memberVO) {
+        Map<String, String> result = new HashMap<>();
+        log.info("MemberVO : " + memberVO.toString());
+        try {
+            memberService.deleteMember(memberVO);
+            result.put("code", "Y");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("code", "N");
+        }
+        return ResponseEntity.ok(result);
     }
 }

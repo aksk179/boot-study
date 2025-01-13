@@ -90,4 +90,9 @@ public class MemberServiceImpl implements MemberService{
             return "N";
         }
     }
+
+    @Override
+    public void deleteMember(MemberVO memberVO) {
+        memberMapper.deleteMember(memberVO);
+    }
 }

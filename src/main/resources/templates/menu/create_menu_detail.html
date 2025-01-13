@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메뉴 상세 등록 화면</title>
+</head>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center"><span th:text="${title}">ㅁ</span></h1>
+    <form th:action="@{/manager/bbs_master_update}" method="post" class="needs-validation" novalidate>
+        <!-- 메뉴id -->
+        <div class="row mb-3 align-items-center">
+            <label for="menuId" class="col-sm-3 col-form-label text-end">메뉴ID</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="menuId" name="menuId" th:value="${menu.menuId}" required>
+                <div class="invalid-feedback">메뉴ID을 입력해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 메뉴명 -->
+        <div class="row mb-3 align-items-center">
+            <label for="menuName" class="col-sm-3 col-form-label text-end">댓글 기능</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="menuName" name="menuName" th:value="${menu.menuName}" required>
+                <div class="invalid-feedback">메뉴명을 입력해주세요.</div>
+            </div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div class="d-flex justify-content-center">
+            <a href="#" th:onclick="'history.back();'" class="btn btn-secondary">취소</a>&nbsp;&nbsp;
+            <button type="button" th:if="${menu.menuId == '' || menu.menuId == null}"     class="btn btn-primary" onclick="save('CREATE')"><span th:text="${btnName}">등록</span></button>
+            <button type="button" th:unless="${menu.menuId == '' || menu.menuId == null}" class="btn btn-primary" onclick="save('UPDATE')"><span th:text="${btnName}">수정</span></button>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    // Bootstrap의 폼 유효성 검사를 위한 JavaScript
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('button', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    function save(mode) {
+        var bbsId = $('#bbsId').val();
+        var bbsName = $('#bbsName').val();
+        var bbsReplyYn = $('#bbsReplyYn').val();
+        var bbsFileYn = $('#bbsFileYn').val();
+        var bbsFileSize = $('#bbsFileSize').val();
+        var bbsNewHour = $('#bbsNewHour').val();
+        var bbsWriterViewYn = $('#bbsWriterViewYn').val();
+        var bbsUserWriteYn = $('#bbsUserWriteYn').val();
+
+        var param = {};
+        param.bbsId = bbsId;
+        param.bbsName = bbsName;
+        param.bbsReplyYn = bbsReplyYn;
+        param.bbsFileYn = bbsFileYn;
+        param.bbsFileSize = bbsFileSize;
+        param.bbsNewHour = bbsNewHour;
+        param.bbsWriterViewYn = bbsWriterViewYn;
+        param.bbsUserWriteYn = bbsUserWriteYn;
+        console.log(param);
+
+        var url = '';
+        if (mode === 'CREATE') {
+            url = '/manager/create_bbs_master.do';
+        } else {
+            url = '/manager/update_bbs_master.do';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(param),
+            success: function(result) {
+                if (result.code === "Y") {
+                    alert("저장이 완료되었습니다.");
+                    location.href = "/manager/bbs_master_list.page"; // 성공 시 리다이렉트
+                } else {
+                    alert("저장에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function() {
+                alert("저장 중 오류가 발생했습니다.");
+            }
+        })
+    }
+</script>
+</html>

@@ -11,8 +11,8 @@ public class MenuDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)    //not null, unique
-    private String menuDetailId;
+    @Column(nullable = false)    //Menu의 id랑 동일
+    private int menuRefId;
 
     @Column(nullable = false)
     private String menuUrl;
@@ -22,8 +22,8 @@ public class MenuDetail {
 
     public MenuDetail() {}
 
-    public MenuDetail(String menuDetailId, String menuUrl, String menuDetailName) {
-        this.menuDetailId = menuDetailId;
+    public MenuDetail(int menuRefId, String menuUrl, String menuDetailName) {
+        this.menuRefId = menuRefId;
         this.menuUrl = menuUrl;
         this.menuDetailName = menuDetailName;
     }

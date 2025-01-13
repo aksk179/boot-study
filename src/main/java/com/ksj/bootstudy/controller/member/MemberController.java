@@ -31,6 +31,7 @@ public class MemberController {
     public String selectMemberListPage(Model model) {
         List<MemberVO> memberList = memberService.selectMemberList(new MemberVO());
         model.addAttribute("memberList", memberList);
+        model.addAttribute("title", "회원 목록 조회");
         return "/admin/member_list";
     }
 
@@ -76,7 +77,7 @@ public class MemberController {
 
     @RequestMapping(value = "/admin/update_member.do")
     public String updateMemberOneAdmin(@ModelAttribute MemberVO memberVO) {
-        log.debug("memberVO : " + memberVO.toString());
+        log.info("memberVO : " + memberVO.toString());
         memberService.updateMemberOne(memberVO);
         log.debug("===================== 회원정보수정완료 ====================");
         return "/admin/member_update_success";
