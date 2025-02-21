@@ -9,7 +9,7 @@
 <th:block th:replace="/fragments/header"></th:block>
 <div class="container mt-5">
     <h1 class="mb-4 text-center">게시판 <span th:text="${title}">등록</span></h1>
-    <form th:action="@{/manager/bbs_master_update}" method="post" class="needs-validation" novalidate>
+    <form th:action="@{/admin/bbs_master_update}" method="post" class="needs-validation" novalidate>
         <!-- 게시판명 -->
         <div class="row mb-3 align-items-center">
             <label for="bbsName" class="col-sm-3 col-form-label text-end">게시판명</label>
@@ -134,9 +134,9 @@
 
         var url = '';
         if (mode === 'CREATE') {
-            url = '/manager/create_bbs_master.do';
+            url = '/admin/create_bbs_master.do';
         } else {
-            url = '/manager/update_bbs_master.do';
+            url = '/admin/update_bbs_master.do';
         }
 
         $.ajax({
@@ -147,7 +147,7 @@
             success: function(result) {
                 if (result.code === "Y") {
                     alert("저장이 완료되었습니다.");
-                    location.href = "/manager/bbs_master_list.page"; // 성공 시 리다이렉트
+                    location.href = "/admin/bbs_master_list.page"; // 성공 시 리다이렉트
                 } else {
                     alert("저장에 실패했습니다. 다시 시도해주세요.");
                 }

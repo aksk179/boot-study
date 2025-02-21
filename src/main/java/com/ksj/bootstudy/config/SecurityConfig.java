@@ -25,8 +25,8 @@ public class SecurityConfig {
                     .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                     .requestMatchers("/menu/**").hasAnyRole("ADMIN")
                     .requestMatchers("/role/**").hasAnyRole("ADMIN")
-                    .requestMatchers("/bbs/create_bbs.page/**").hasAnyRole("ADMIN")
                     .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers("/bbs/create_bbs.page/**").authenticated()
                     .anyRequest().authenticated()
             )
             .formLogin(formLogin -> formLogin

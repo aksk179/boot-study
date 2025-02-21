@@ -11,7 +11,7 @@
 <div class="container mt-4">
     <h1 class="mb-4 text-center">게시판 관리</h1>
     <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-sm btn-primary" type="button" th:onclick="location.href='/manager/create_bbs_master.page'">게시판 등록</button>
+        <button class="btn btn-sm btn-primary" type="button" th:onclick="location.href='/admin/create_bbs_master.page'">게시판 등록</button>
     </div>
     <table class="table table-bordered table-hover">
         <thead class="table-light text-center">
@@ -37,7 +37,7 @@
             <td th:text="${bbs.bbsWriterViewYn}"></td>
             <td th:text="${bbs.bbsUserWriteYn}"></td>
             <td>
-                <a th:href="@{'/manager/create_bbs_master.page/' + ${bbs.bbsId}}" class="btn btn-sm btn-primary">수정</a>
+                <a th:href="@{'/admin/create_bbs_master.page/' + ${bbs.bbsId}}" class="btn btn-sm btn-primary">수정</a>
                 <a class="btn btn-sm btn-danger" th:attr="data-bbs-id=${bbs.bbsId}" onclick="deleteBbsMaster(this)">삭제</a>
             </td>
         </tr>
@@ -54,14 +54,14 @@
         param.bbsId = bbsId;
 
         $.ajax({
-            url: '/manager/delete_bbs_master.do',
+            url: '/admin/delete_bbs_master.do',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(param),
             success: function(result) {
                 if (result.code === "Y") {
                     alert("삭제가 완료되었습니다.");
-                    location.href = "/manager/bbs_master_list.page"; // 성공 시 리다이렉트
+                    location.href = "/admin/bbs_master_list.page"; // 성공 시 리다이렉트
                 } else {
                     alert("삭제에 실패했습니다. 다시 시도해주세요.");
                 }

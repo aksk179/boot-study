@@ -3,35 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>메뉴 목록 화면</title>
+    <title>권한 목록 화면</title>
 </head>
 <body>
 <th:block th:replace="/fragments/header"></th:block>
 <div class="container mt-4">
     <h1 class="mb-4 text-center"><span th:text="${title}">타이틀</span></h1>
     <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-sm btn-primary" type="button" onclick="createMenu()">메뉴 등록</button>
+        <button class="btn btn-sm btn-primary" type="button" onclick="createRole()">권한 등록</button>
     </div>
     <table class="table table-bordered table-hover">
         <thead class="table-light text-center">
         <tr>
             <th>번호</th>
-            <th>메뉴ID</th>
-            <th>메뉴명</th>
+            <th>권한ID</th>
+            <th>권한명</th>
             <th>작업</th>
         </tr>
         </thead>
         <tbody class="text-center">
         <!-- 데이터 반복 -->
-        <tr th:each="menu : ${menuList}"
-            th:attr="data-menu-id=${menu.id}, data-menu-menuId=${menu.menuId}" style="cursor: pointer;">
-            <td th:text="${menu.id}"><input type="hidden" th:value="${menu.id}"></td>
-            <td th:text="${menu.menuId}"></td>
-            <td th:text="${menu.menuName}"></td>
+        <tr th:each="role : ${roleList}"
+            th:attr="data-role-id=${role.id}, data-role-roleId=${role.roleId}" style="cursor: pointer;">
+            <td th:text="${role.id}"><input type="hidden" th:value="${role.id}"></td>
+            <td th:text="${role.roleId}"></td>
+            <td th:text="${role.roleName}"></td>
             <td>
-                <button class="btn btn-sm btn-primary" onclick="save('menuDetailPage', this)">상세등록</button>
-                <button class="btn btn-sm btn-primary" onclick="save('updateMenu', this)">수정</button>
-                <button class="btn btn-sm btn-danger" onclick="save('deleteMenu', this)">삭제</button>
+                <button class="btn btn-sm btn-primary" onclick="save('roleMenuRelPage', this)">메뉴맵핑등록</button>
+                <button class="btn btn-sm btn-primary" onclick="save('updateRole', this)">수정</button>
+                <button class="btn btn-sm btn-danger" onclick="save('deleteRole', this)">삭제</button>
             </td>
         </tr>
         </tbody>
@@ -39,19 +39,19 @@
 </div>
 </body>
 <script>
-    function createMenu() {
-        location.href = '/menu/create_menu.page';
+    function createRole() {
+        location.href = '/role/create_role.page';
     }
 
     function save(mode, button) {
         const tr = button.closest('tr'); // 클릭된 버튼의 상위 tr을 찾음
-        const menuId = tr.getAttribute('data-menu-menuId'); // 해당 tr의 data-menu-id 가져오기
-        const id = tr.getAttribute('data-menu-id');
+        const roleId = tr.getAttribute('data-role-roleId'); // 해당 tr의 data-menu-id 가져오기
+        const id = tr.getAttribute('data-role-id');
 
-        if (mode === 'menuDetailPage') {
-            location.href = `/menu/detail_menu_list.page/`+menuId;
-        } else if (mode === 'updateMenu') {
-            location.href = `/menu/create_menu.page/`+id + '/update';
+        if (mode === 'roleMenuRelPage') {
+            location.href = `/role/role_menu_rel.page/`+ roleId;
+        } else if (mode === 'updateRole') {
+            location.href = `/role/create_role.page/`+id + '/update';
         } else {
             if (!confirm("정말 삭제하시겠습니까?")) return;
 

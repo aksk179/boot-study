@@ -3,38 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상세메뉴 등록 화면</title>
+    <title>권한 등록 화면</title>
 </head>
 <body>
 <th:block th:replace="/fragments/header"></th:block>
 <div class="container mt-5">
     <h1 class="mb-4 text-center"><span th:text="${title}">타이틀</span></h1>
     <form method="post" class="needs-validation" novalidate>
-        <!-- 메뉴id -->
+        <!-- 권한ID -->
         <div class="row mb-3 align-items-center">
-            <label for="menuId" class="col-sm-3 col-form-label text-end">상위메뉴ID</label>
+            <label for="roleId" class="col-sm-3 col-form-label text-end">권한ID</label>
             <div class="col-sm-9">
-                <input type="hidden" id="id" name="id" th:value="${menuDetail.id}">
-                <input type="text" class="form-control" id="menuId" name="menuId" th:value="${menuId}" readonly>
-                <div class="invalid-feedback">메뉴ID을 입력해주세요.</div>
+                <input type="hidden" id="id" name="id" th:value="${role.id}">
+                <input type="text" class="form-control" id="roleId" name="roleId" th:value="${role.roleId}" required>
+                <div class="invalid-feedback">권한ID를 입력해주세요.</div>
             </div>
         </div>
 
-        <!-- 메뉴url -->
+        <!-- 권한명 -->
         <div class="row mb-3 align-items-center">
-            <label for="menuUrl" class="col-sm-3 col-form-label text-end">메뉴URL</label>
+            <label for="roleName" class="col-sm-3 col-form-label text-end">권한명</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="menuUrl" name="menuUrl" th:value="${menuDetail.menuUrl}" required>
-                <div class="invalid-feedback">메뉴URL을 입력해주세요.</div>
-            </div>
-        </div>
-
-        <!-- 메뉴명 -->
-        <div class="row mb-3 align-items-center">
-            <label for="menuDetailName" class="col-sm-3 col-form-label text-end">메뉴명</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" id="menuDetailName" name="menuDetailName" th:value="${menuDetail.menuDetailName}" required>
-                <div class="invalid-feedback">메뉴명을 입력해주세요.</div>
+                <input type="text" class="form-control" id="roleName" name="roleName" th:value="${role.roleName}" required>
+                <div class="invalid-feedback">권한명을 입력해주세요.</div>
             </div>
         </div>
 
@@ -64,18 +55,16 @@
 
     function save() {
         var id = $('#id').val();
-        var menuId = $('#menuId').val();
-        var menuUrl = $('#menuUrl').val();
-        var menuDetailName = $('#menuDetailName').val();
+        var roleId = $('#roleId').val();
+        var roleName = $('#roleName').val();
 
         var param = {};
         param.id = id;
-        param.menuId = menuId;
-        param.menuUrl = menuUrl;
-        param.menuDetailName = menuDetailName;
+        param.roleId = roleId;
+        param.roleName = roleName;
         console.log(param);
 
-        var url = '/menuDetail/save';
+        var url = '/role/save';
 
         $.ajax({
             url: url,
@@ -85,7 +74,7 @@
             success: function(result) {
                 if (result.code === "Y") {
                     alert("저장이 완료되었습니다.");
-                    location.href = "/menu/detail_menu_list.page/" + menuId; // 성공 시 리다이렉트
+                    location.href = "/role/role_list.page"; // 성공 시 리다이렉트
                 } else {
                     alert("저장에 실패했습니다. 다시 시도해주세요.");
                 }

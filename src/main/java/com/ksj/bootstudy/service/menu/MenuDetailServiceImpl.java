@@ -38,4 +38,11 @@ public class MenuDetailServiceImpl implements MenuDetailService {
     public void deleteById(Long id) {
         menuDetailRepository.deleteById(id);
     }
+
+    @Override
+    public List<MenuDetail> findByMenuId(String menuId) {
+        return menuDetailRepository.findByMenuId(menuId);
+    }
+
+
 }

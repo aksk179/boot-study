@@ -5,10 +5,7 @@ import com.ksj.bootstudy.service.menu.MenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,9 +48,23 @@ public class MenuRestController {
         return ResponseEntity.ok(result);
     }
 
+    @RequestMapping(value = "/menu/delete_menu/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, Object>> deleteById(@PathVariable("id") Long id) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            menuService.deleteById(id);
+            result.put("code", "Y");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("code", "N");
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
 //    @RequestMapping(value = "/menu/menu_list.page", method = RequestMethod.GET)
 //    public ResponseEntity<Map<String, Object>> findAll() {
-//        log.info("?????????");
+//        log.info("findAll() 실행");
 //        Map<String, Object> result = new HashMap<>();
 //        try {
 //            List<Menu> data = menuService.findAll();
@@ -66,4 +77,6 @@ public class MenuRestController {
 //        }
 //        return ResponseEntity.ok(result);
 //    }
+
+
 }

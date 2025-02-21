@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,9 @@
 <body>
 <th:block th:replace="/fragments/header"></th:block>
 <div class="container mt-4">
-    <h1 class="mb-4 text-center"><span th:text="${masterVO.bbsName}">공지사항</span></h1>
+    <h1 class="mb-4 text-center"><span th:text="${masterVO.bbsName}" th:attr="data-bbs-id=${masterVO.bbsId}">공지사항</span></h1>
     <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-sm btn-primary" type="button" th:if="${masterVO.bbsUserWriteYn == 'Y'}" th:onclick="createBbs()">게시글 작성</button>
+        <button class="btn btn-sm btn-primary" type="button" th:onclick="createBbs()" th:if="${#authorization.expression('hasRole(''ADMIN'')') or masterVO.bbsUserWriteYn == 'Y'}">게시글 작성</button>
     </div>
     <table class="table table-bordered table-hover">
         <thead class="table-light text-center">
@@ -25,7 +26,7 @@
         <tbody>
         <!-- 데이터 반복 -->
         <tr th:each="bbs : ${bbsList}"
-            th:attr="data-bbs-id=${bbs.bbsId}, data-bbs-no=${bbs.bbsNo}" style="cursor: pointer;">
+            th:attr="data-bbs-no=${bbs.bbsNo}" style="cursor: pointer;">
             <td th:text="${bbs.bbsNo}"><input type="hidden" th:value="${bbs.bbsId}"></td>
             <td><span th:text="${bbs.bbsTitle}"></span>&nbsp;&nbsp;<img th:if="${bbs.newTime < masterVO.bbsNewHour}" th:src="@{/img/new.jpg}"></td>
             <td th:text="${bbs.bbsWtime}"></td>
@@ -51,7 +52,8 @@
     });
 
     function createBbs() {
-        const rows = document.querySelectorAll('tr[data-bbs-id]');
+    console.log('??');
+        const rows = document.querySelectorAll('span[data-bbs-id]');
         rows.forEach(function (dataset) {
             const bbsId = dataset.getAttribute('data-bbs-id');
             console.log(bbsId);

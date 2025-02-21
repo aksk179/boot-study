@@ -15,4 +15,6 @@ public interface MenuDetailService {
     MenuDetail findByMenuDetailNameContainsIgnoreCase(String menuDetailName);
 
     void deleteById(Long id);
+
+    List<MenuDetail> findByMenuId(String menuId);
 }

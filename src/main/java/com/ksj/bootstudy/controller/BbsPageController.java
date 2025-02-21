@@ -10,6 +10,9 @@ import com.ksj.bootstudy.vo.BbsMainVO;
 import com.ksj.bootstudy.vo.BbsMasterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,19 +115,25 @@ public class BbsPageController {
             List<BbsCommentVO> resultCmtVO = bbsMainService.selectBbsCmtList(bbsCommentVO);
             model.addAttribute("bbsCmtList", resultCmtVO);
         } else if (pageName.equals("create_bbs")) {
-            if (bbsId.equals("BBS001")) {
-                //게시판 성격 조회
-                BbsMasterVO bbsMasterVO = new BbsMasterVO();
-                bbsMasterVO.setBbsId(bbsId);
-                BbsMasterVO resultMasterVO = bbsMasterService.selectBbsMasterInfo(bbsMasterVO);
-                model.addAttribute("masterVO", resultMasterVO);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
 
-                //bbs_main
-                BbsMainVO bbsMainVO = new BbsMainVO();
-                bbsMainVO.setBbsId(bbsId);
-                model.addAttribute("bbs", bbsMainVO);
-                model.addAttribute("btnName", "등록");
+            // 🔥 권한 체크
+            if (!bbsMasterService.canUserWrite(bbsId, username)) {
+                throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
             }
+
+            //게시판 성격 조회
+            BbsMasterVO bbsMasterVO = new BbsMasterVO();
+            bbsMasterVO.setBbsId(bbsId);
+            BbsMasterVO resultMasterVO = bbsMasterService.selectBbsMasterInfo(bbsMasterVO);
+            model.addAttribute("masterVO", resultMasterVO);
+
+            //bbs_main
+            BbsMainVO bbsMainVO = new BbsMainVO();
+            bbsMainVO.setBbsId(bbsId);
+            model.addAttribute("bbs", bbsMainVO);
+            model.addAttribute("btnName", "등록");
         }
     }
 }

@@ -54,9 +54,12 @@ public class BbsMainServiceImpl implements BbsMainService {
     @Override
     public void createBbs(BbsMainVO bbsMainVO) {
         BbsMainVO resultVO = bbsMainMapper.selectMaxBbsNo(bbsMainVO);
-        int bbsNo = resultVO.getBbsNo();
-
-        bbsMainVO.setBbsNo(bbsNo+1);
+        if (resultVO == null) {
+            bbsMainVO.setBbsNo(1);
+        } else {
+            int bbsNo = resultVO.getBbsNo();
+            bbsMainVO.setBbsNo(bbsNo + 1);
+        }
         bbsMainMapper.createBbs(bbsMainVO);
     }
 }

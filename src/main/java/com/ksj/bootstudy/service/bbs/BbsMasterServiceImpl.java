@@ -4,6 +4,8 @@ import com.ksj.bootstudy.mapper.BbsMasterMapper;
 import com.ksj.bootstudy.vo.BbsMasterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,5 +47,20 @@ public class BbsMasterServiceImpl implements BbsMasterService {
     @Override
     public void deleteBbsMaster(BbsMasterVO bbsMasterVO) {
         bbsMasterMapper.deleteBbsMaster(bbsMasterVO);
+    }
+
+    public boolean canUserWrite(String bbsId, String username) {
+        // 공지사항 게시판 ID 목록
+        List<String> noticeBoards = List.of("BBS001");
+
+        // 자유게시판이면 true 반환 (누구나 작성 가능)
+        if (!noticeBoards.contains(bbsId)) {
+            return true;
+        }
+
+        // 공지사항이면 관리자 권한 체크
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
     }
 }

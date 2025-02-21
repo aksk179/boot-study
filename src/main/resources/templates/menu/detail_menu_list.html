@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상세메뉴 목록 화면</title>
+</head>
+<body>
+<th:block th:replace="/fragments/header"></th:block>
+<div class="container mt-4">
+    <h1 class="mb-4 text-center"><span th:text="${menuId} + ' - ' + ${title}">타이틀</span></h1>
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-sm btn-primary" type="button" th:attr="data-detail-menuId=${menuId}" th:onclick="createMenuDetail(this)">상세메뉴 등록</button>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light text-center">
+        <tr>
+            <th>번호</th>
+            <th>상위메뉴ID</th>
+            <th>상세메뉴명</th>
+            <th>URL</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        <!-- 데이터 반복 -->
+        <tr th:each="detail : ${detailMenuList}" style="cursor: pointer;">
+            <td th:text="${detail.id}"></td>
+            <td th:text="${detail.menuId}"></td>
+            <td th:text="${detail.menuDetailName}"></td>
+            <td th:text="${detail.menuUrl}"></td>
+            <td>
+                <button class="btn btn-sm btn-primary" th:attr="data-detail-id=${detail.id}" onclick="save('updateMenuDetail', this)">수정</button>
+                <button class="btn btn-sm btn-danger" th:attr="data-detail-id=${detail.id}" onclick="save('deleteMenuDetail', this)">삭제</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+    function createMenuDetail(button) {
+        const menuId = button.getAttribute('data-detail-menuId');
+        location.href = '/menu/create_menu_detail.page/' + menuId;
+    }
+
+    function save(mode, button) {
+<!--        const tr = button.closest('tr'); // 클릭된 버튼의 상위 tr을 찾음-->
+        const id = button.getAttribute('data-detail-id'); // 해당 tr의 data-detail-id 가져오기
+
+        if (mode === 'createMenuDetail') {
+            location.href = `/menu/create_menu_detail.page/`+id;
+        } else if (mode === 'updateMenuDetail') {
+            location.href = `/menu/create_menu_detail.page/`+ id + '/update';
+        } else {
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            location.href = `/menu/delete_menu/`+id;
+        }
+    }
+</script>
+</html>

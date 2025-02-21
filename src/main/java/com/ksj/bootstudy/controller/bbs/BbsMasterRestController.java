@@ -20,7 +20,7 @@ public class BbsMasterRestController {
     @Autowired
     BbsMasterService bbsMasterService;
 
-    @RequestMapping(value = "/manager/update_bbs_master.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/update_bbs_master.do", method = RequestMethod.POST)
     public ResponseEntity<Map<String, String>> updateBbsMaster(@RequestBody BbsMasterVO bbsVO) {
         Map<String, String> result = new HashMap<>();
         try {
@@ -33,7 +33,7 @@ public class BbsMasterRestController {
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value = "/manager/create_bbs_master.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/create_bbs_master.do", method = RequestMethod.POST)
     public ResponseEntity<Map<String, String>> createBbsMaster(@RequestBody BbsMasterVO bbsVO) {
         Map<String, String> result = new HashMap<>();
         try {
@@ -46,7 +46,7 @@ public class BbsMasterRestController {
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value = "/manager/delete_bbs_master.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/delete_bbs_master.do", method = RequestMethod.POST)
     public ResponseEntity<Map<String, String>> deleteBbsMaster(@RequestBody BbsMasterVO bbsVO) {
         Map<String, String> result = new HashMap<>();
         try {

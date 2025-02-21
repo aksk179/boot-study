@@ -1,7 +1,10 @@
 package com.ksj.bootstudy.controller.member;
 
+import com.ksj.bootstudy.model.Menu;
+import com.ksj.bootstudy.model.Role;
 import com.ksj.bootstudy.service.email.EmailService;
 import com.ksj.bootstudy.service.member.MemberService;
+import com.ksj.bootstudy.service.role.RoleService;
 import com.ksj.bootstudy.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -26,6 +34,9 @@ public class MemberController {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    RoleService roleService;
 
     @RequestMapping(value = "/admin/member_list.page")
     public String selectMemberListPage(Model model) {
@@ -99,7 +110,32 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/")
-    public String mainPage() {
+    public String mainPage(Model model) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            List<Menu> assignedMenus = new ArrayList<>();
+            model.addAttribute("assignedMenus", assignedMenus);
+            return "/member_main";
+        }
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        System.out.println(roles); // [ROLE_USER, ROLE_ADMIN] 등 출력
+
+        String roleId = roles.get(0).substring(5);
+        if (roleId.equals("ANONYMOUS")) {
+            List<Menu> assignedMenus = new ArrayList<>();
+            model.addAttribute("assignedMenus", assignedMenus);
+            return "/member_main";
+        }
+        System.out.println(roleId);
+
+        Role role = roleService.findByRoleId(roleId);
+        List<Menu> assignedMenus = role.getMenuList();
+        model.addAttribute("assignedMenus", assignedMenus);
+
         return "/member_main";
     }
 }

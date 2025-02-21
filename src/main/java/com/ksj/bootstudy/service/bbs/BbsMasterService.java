@@ -15,4 +15,6 @@ public interface BbsMasterService {
     public void createBbsMaster(BbsMasterVO bbsMasterVO);
 
     public void deleteBbsMaster(BbsMasterVO bbsMasterVO);
+
+    boolean canUserWrite(String bbsId, String username);
 }

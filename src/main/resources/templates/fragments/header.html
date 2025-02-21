@@ -16,6 +16,9 @@
     body {
         padding-top: 60px; /* 헤더 높이만큼 여백 추가 */
     }
+    .nav-link {
+        color: white; /* 글씨 색상을 흰색으로 설정 */
+    }
 </style>
 </head>
 <body>
@@ -31,37 +34,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" th:href="@{/}">홈</a>
                     </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownUserLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            일반회원
-                        </a>
+                    <li class="nav-item dropdown" th:each="menu : ${assignedMenus}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownUserLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${menu.menuName}"></a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                            <li><a class="dropdown-item" href="/login/member_register.page">회원가입</a></li>
-                            <li><a class="dropdown-item" href="/login/member_login.page">로그인</a></li>
-                            <li sec:authorize="hasAnyRole('USER', 'ADMIN')"><a class="dropdown-item" href="/user/update_member_user.page" >회원정보수정</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN')">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarManager" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            기준정보관리
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" th:href="@{/manager/bbs_master_list.page}">게시판 목록</a></li>
-                            <li><a class="dropdown-item" th:href="@{/manager/create_bbs_master.page}">게시판 등록</a></li>
-                            <li><a class="dropdown-item" th:href="@{/menu/menu_list.page}">메뉴 관리</a></li>
-                            <li><a class="dropdown-item" href="/admin/member_list.page">회원목록조회</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarBbs" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            게시판
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" th:href="@{/bbs/bbs_main.page/BBS001}">공지사항</a></li>
-                            <li><a class="dropdown-item" th:href="@{/bbs/bbs_main.page/BBS002}">자유 게시판</a></li>
-                            <li><a class="dropdown-item" th:href="@{/bbs/bbs_main.page/BBS003}">질문과 답변</a></li>
+                            <li th:each="item : ${menu.menuDetailList}">
+                                <a class="dropdown-item" th:href="${item.menuUrl}" th:text="${item.menuDetailName}"></a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

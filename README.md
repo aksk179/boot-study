@@ -413,3 +413,85 @@ controller -> service -> mapper -> sql                    --> 기존
 * 프론트단에서 쓰려고 추출해놓고 서버사이드에서 값 가져옴..
   * 막 쓰지 말고 구별해서 제대로 쓸 것
 * pagecontroller 어떻게 하면 더 깔끔하게 쓸 것인지 고민해보기
+
+## 2.5-7 정리
+* 기억 되살리기 겸 조금씩 안 되던 부분들 정리중
+1. 게시글 등록 권한 기능
+```java
+.requestMatchers("/bbs/create_bbs.page/**").hasAnyRole("ADMIN") 
+```
+이렇게 하니까 ADMIN만 접근 가능해서 USER로 로그인 후, 게시글 등록 시도 시 자유게시판이어도 403에러가 뜸.
+(FRONT에서 버튼 안 보이게 해놨지만, URL로 접근 가능성 있으니 방지해야함)
+
+* 해결방법
+  * service단에서 권한 체크 + checkModel()에 권한 검사 추가
+    ```java
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName();
+  
+    // 🔥 권한 체크
+    if (!bbsMasterService.canUserWrite(bbsId, username)) {
+        throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
+    }
+  
+    public boolean canUserWrite(String bbsId, String username) {
+      // 공지사항 게시판 ID 목록
+      List<String> noticeBoards = List.of("BBS001");
+  
+      // 자유게시판이면 true 반환 (누구나 작성 가능)
+      if (!noticeBoards.contains(bbsId)) {
+          return true;
+      }
+
+      // 공지사항이면 관리자 권한 체크
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      return authentication.getAuthorities().stream()
+              .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+    }
+    ```
+    
+2. 메뉴 등록, 권한 목록, 등록 기능
+
+## 2.20 정리
+* JPA
+  * 연관관계
+    * @ManyToOne
+    * @OneToMany
+      * 계속해서 순환참조 에러 남.. tostring()이 무한루프를 돌아서 그랬던 거였음.. override해서 따로 해주니까 됌.
+      * 순환참조 에러 시 @JsonIgnore, @JsonIdentityInfo 해결방법이 있음.
+    * JsonManagedReference를 상위에 입력하기 그러면 하위 데이터도 같이 select해옴
+      * MenuDetail에서 SELECT문이 두 번 날라감.(Menu까지)
+      * 한 줄로 하기 위해서 JPQL을 이용해서 @Query()로 커스텀 할 수 있음. JOIN FETCH 쓰기
+      * [LEFT [OUTER] | INNER] JOIN FETCH 조인경로
+    * @ManyToMany
+      * JsonManagedReference, JsonBackReference안 먹힘.
+      * JsonIdentityInfo 다대다관계에 적합.
+      * dialect
+        * JPA는 관계를 주로 신경 씀.
+        * mapper할 때는 delete -> insert인데 JPA는 UPDATE일까, DELETE->INSERT일까 했는데 후자였음.
+        * 요청 포맷만 맞춰주면 잘 저장해줌.
+        ```shell
+            const role = {};
+            role.id = '[[${role.id}]]';
+            role.roleId = '[[${role.roleId}]]';
+            role.roleName = '[[${role.roleName}]]';
+            role.menuList = assignedMenus;
+            console.log(role);
+      
+            $.ajax({
+            url: '/role/save',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(role),
+            success: function(result) {
+            if (result.code === "Y") {
+            alert("저장이 완료되었습니다.");
+            } else {
+            alert("저장에 실패했습니다. 다시 시도해주세요.");
+            }
+            },
+            error: function() {
+            alert("저장 중 오류가 발생했습니다.");
+            }
+            });
+          ```
