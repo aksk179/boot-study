@@ -22,6 +22,7 @@ public class SecurityConfig {
             .authorizeHttpRequests((authoziedRequest) -> authoziedRequest
                     .requestMatchers("/", "/img/**").permitAll()
                     .requestMatchers("/login/**").permitAll()
+                    .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                     .requestMatchers("/menu/**").hasAnyRole("ADMIN")
                     .requestMatchers("/role/**").hasAnyRole("ADMIN")

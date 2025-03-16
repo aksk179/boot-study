@@ -1,68 +1,27 @@
-# application.properties 설정
-```properties
-spring.application.name=member
+# Springboot Study (개인학습)
 
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
-spring.datasource.username=postgres
-spring.datasource.password=manager
+### [ Home 화면 ]
+![img.png](img/main_page.png)
 
-#mybatis-mapper
-mybatis.mapper-locations=classpath:/mybatis/mapper/**/*.xml
-mybatis.type-aliases-package=com.ksj.vo
-mybatis.configuration.map-underscore-to-camel-case=true
+# 학습 목표
+### 1. Springboot를 이해하고 Backend 서비스 개발을 학습
+### 2. Spring Seucity 적용
+### 3. Spring JDBC 적용 - MyBatis
+### 4. Spring JPA 적용
+### 5. Application Build 환경 구성 (Jenkins)
 
-#log-level
-logging.level.root=debug
+# 목표 시스템
+### - 회원관리, 로그인(인증) 및 권한 관리
+### - 권한 및 메뉴 관리
+### - 게시판 관리 (게시판 자동 생성 및 댓글기능 구현)
 
-#Swagger
-spring.mvc.pathmatch.matching-strategy=ant_path_matcher
-```
+# Screen shot
+### [ 로그인 / 회원가입 ]
+![img_1.png](img/login_register.png)
 
-# DB
-### create문
+### [ 회원관리 / 게시판관리 / 메뉴관리 / 자유게시판 ]
 
-```
-CREATE TABLE member (
-id          VARCHAR(100) NOT NULL PRIMARY KEY, -- 회원 ID
-name        VARCHAR(100) NOT NULL,            -- 회원 이름
-passwd      VARCHAR(300),                     -- 비밀번호
-cell_phone  VARCHAR(20),                      -- 휴대폰 번호
-email       VARCHAR(100),                     -- 이메일 주소
-zip_code    VARCHAR(5),                       -- 우편번호
-address     VARCHAR(100),                     -- 주소
-status      CHAR(1)                           -- 상태 (활성화 여부)
-);
-
-
--- 컬럼에 주석 추가
-COMMENT ON COLUMN member.id IS '고유 ID';
-COMMENT ON COLUMN member.name IS '이름';
-COMMENT ON COLUMN member.passwd IS '비밀번호';
-COMMENT ON COLUMN member.cell_phone IS '휴대폰 번호';
-COMMENT ON COLUMN member.email IS '이메일 주소';
-COMMENT ON COLUMN member.zip_code IS '우편번호';
-COMMENT ON COLUMN member.address IS '상세 주소';
-COMMENT ON COLUMN member.status IS '회원 상태 (Y: 활성, N: 비활성)';
-```
-
-### insert문
-```
-INSERT INTO member (id, name, passwd, cell_phone, email, zip_code, address, status) VALUES
-('M001', '홍길동', 'password123', '010-1234-5678', 'hong@gmail.com', '12345', '서울특별시 강남구', 'Y'),
-('M002', '김철수', 'securepass456', '010-2345-6789', 'chulsoo@gmail.com', '54321', '부산광역시 해운대구', 'Y'),
-('M003', '이영희', 'mypassword789', '010-3456-7890', 'younghee@gmail.com', '10101', '대구광역시 수성구', 'Y'),
-('M004', '박민수', 'pass1234', '010-4567-8901', 'minsoo@gmail.com', '20202', '광주광역시 북구', 'N'),
-('M005', '최지영', 'pass5678', '010-5678-9012', 'jiyeong@gmail.com', '30303', '인천광역시 남동구', 'Y'),
-('M006', '장윤아', 'secure098', '010-6789-0123', 'yuna@gmail.com', '40404', '울산광역시 중구', 'N'),
-('M007', '윤재희', 'mypassword321', '010-7890-1234', 'jaehee@gmail.com', '50505', '대전광역시 서구', 'Y'),
-('M008', '백승호', 'abc123', '010-8901-2345', 'seungho@gmail.com', '60606', '경기도 성남시', 'Y'),
-('M009', '오현지', 'pass9999', '010-9012-3456', 'hyunji@gmail.com', '70707', '경상남도 창원시', 'N'),
-('M010', '정유진', 'secure555', '010-0123-4567', 'yujin@gmail.com', '80808', '충청북도 청주시', 'Y');
-
-commit;
-```
-
+![img_2.png](img/member_role_menu_list.png)
 
 ## 11.27 정리
 ```java

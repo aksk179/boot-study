@@ -6,7 +6,7 @@
     <title>메뉴 목록 화면</title>
 </head>
 <body>
-<th:block th:replace="/fragments/header"></th:block>
+<th:block th:include="~{/fragments/header}"></th:block>
 <div class="container mt-4">
     <h1 class="mb-4 text-center"><span th:text="${title}">타이틀</span></h1>
     <div class="d-flex justify-content-end mb-3">

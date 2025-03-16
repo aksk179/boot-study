@@ -15,10 +15,10 @@
         }
         .register-container {
             background: white;
-            padding: 30px 40px;
+            padding: 20px 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 500px;
             text-align: center;
         }
         .register-container a {
@@ -82,6 +82,11 @@
     <h1>회원가입</h1>
     <form id="registerForm" th:object="${member}" th:action="@{/login/member_register.do}" th:method="post">
         <table>
+            <colgroup>
+                <col style="width:120px">
+                <col />
+            </colgroup>
+            <tbody>
             <tr>
                 <td>아이디</td>
                 <td>
@@ -115,6 +120,7 @@
                 <td>주소</td>
                 <td><input type="text" id="address" name="address" th:field="*{address}" required></td>
             </tr>
+            </tbody>
         </table>
         <button type="button" onclick="register()">가입하기</button>
     </form>

@@ -78,7 +78,7 @@
     </style>
 </head>
 <body>
-<th:block th:replace="/fragments/header"></th:block>
+<th:block th:include="~{/fragments/header}"></th:block>
 <div class="update-container">
     <h1>회원정보수정</h1>
     <form id="updateForm" th:object="${member}" th:action="@{/admin/update_member.do}" th:method="post">

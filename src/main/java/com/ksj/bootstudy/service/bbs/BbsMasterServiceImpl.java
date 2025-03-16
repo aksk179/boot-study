@@ -35,6 +35,10 @@ public class BbsMasterServiceImpl implements BbsMasterService {
     @Override
     public void createBbsMaster(BbsMasterVO bbsMasterVO) {
         BbsMasterVO newBbsMasterVO = bbsMasterMapper.selectBbsMaxKey();
+        if (newBbsMasterVO == null) {
+            newBbsMasterVO = new BbsMasterVO();
+            newBbsMasterVO.setBbsId("BBS000");
+        }
         String id = newBbsMasterVO.getBbsId();
         int num = Integer.parseInt(id.substring(3));
         log.info("num : " + num);

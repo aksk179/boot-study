@@ -29,7 +29,7 @@ public class MyUserDetailService implements UserDetailsService {
         MemberVO newMember = memberMapper.selectMemberPasswd(memberVO);
         log.info("newMember pwd : " + newMember.getPasswd());
 
-        log.info("dddfdfd : " + passwordEncoder.encode("1"));
+        log.info("admin.encode : " + passwordEncoder.encode("admin"));
 
         return User.builder()
                 .username(newMember.getId())
