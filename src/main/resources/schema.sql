@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS menu
     id            INTEGER NOT NULL AUTO_INCREMENT,
     menu_id       VARCHAR(255) NOT NULL,
     menu_name     VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT idx_menu UNIQUE (menu_id)
 );
 
 CREATE TABLE IF NOT EXISTS menu_detail

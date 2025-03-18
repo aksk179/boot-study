@@ -15,6 +15,7 @@ insert into menu (menu_id, menu_name) values ('USER',    '사용자 메뉴');
 insert into menu_detail ( menu_id, menu_url, menu_detail_name ) values ('ADMIN', '/admin/member_list.page', '회원관리');
 insert into menu_detail ( menu_id, menu_url, menu_detail_name ) values ('ADMIN', '/admin/bbs_master_list.page', '게시판관리');
 insert into menu_detail ( menu_id, menu_url, menu_detail_name ) values ('ADMIN', '/menu/menu_list.page', '메뉴관리');
+insert into menu_detail ( menu_id, menu_url, menu_detail_name ) values ('ADMIN', '/role/role_list.page', '권한관리');
 
 -- USER
 insert into menu_detail ( menu_id, menu_url, menu_detail_name ) values ('USER', '/bbs/bbs_main.page/BBS001', '공지사항');

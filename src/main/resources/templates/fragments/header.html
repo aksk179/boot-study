@@ -38,7 +38,7 @@
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownUserLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${menu.menuName}"></a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                             <li th:each="item : ${menu.menuDetailList}">
-                                <a class="dropdown-item" th:href="${item.menuUrl}" th:text="${item.menuDetailName}"></a>
+                                <a class="dropdown-item" th:href="${item.menuUrl}" th:text="${item.menuDetailName}" target="mainFrame"></a>
                             </li>
                         </ul>
                     </li>

@@ -111,12 +111,42 @@ public class MemberController {
 
     @RequestMapping(value = "/")
     public String mainPage(Model model) {
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        Authentication authentication = context.getAuthentication();
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            List<Menu> assignedMenus = new ArrayList<>();
+//            model.addAttribute("assignedMenus", assignedMenus);
+//            return "/member_main2";
+//        }
+//        List<String> roles = authentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//
+//        System.out.println(roles); // [ROLE_USER, ROLE_ADMIN] 등 출력
+//
+//        String roleId = roles.get(0).substring(5);
+//        if (roleId.equals("ANONYMOUS")) {
+//            List<Menu> assignedMenus = new ArrayList<>();
+//            model.addAttribute("assignedMenus", assignedMenus);
+//            return "/member_main2";
+//        }
+//        System.out.println(roleId);
+//
+//        Role role = roleService.findByRoleId(roleId);
+//        List<Menu> assignedMenus = role.getMenuList();
+//        model.addAttribute("assignedMenus", assignedMenus);
+
+        return "/member_main2";
+    }
+
+    @RequestMapping(value = "/top-menu.page")
+    public String mainPage2(Model model) {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             List<Menu> assignedMenus = new ArrayList<>();
             model.addAttribute("assignedMenus", assignedMenus);
-            return "/member_main";
+            return "/fragments/header";
         }
         List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -128,7 +158,7 @@ public class MemberController {
         if (roleId.equals("ANONYMOUS")) {
             List<Menu> assignedMenus = new ArrayList<>();
             model.addAttribute("assignedMenus", assignedMenus);
-            return "/member_main";
+            return "/fragments/header";
         }
         System.out.println(roleId);
 
@@ -136,6 +166,12 @@ public class MemberController {
         List<Menu> assignedMenus = role.getMenuList();
         model.addAttribute("assignedMenus", assignedMenus);
 
-        return "/member_main";
+        return "/fragments/header";
+    }
+
+    @RequestMapping(value = "/main.page")
+    public String mainPage3(Model model) {
+
+        return "/member_main3";
     }
 }
