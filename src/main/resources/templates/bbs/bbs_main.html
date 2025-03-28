@@ -26,7 +26,7 @@
         <tbody>
         <!-- 데이터 반복 -->
         <tr th:each="bbs : ${bbsList}"
-            th:attr="data-bbs-no=${bbs.bbsNo}" style="cursor: pointer;">
+            th:attr="data-bbs-id=${bbs.bbsId},data-bbs-no=${bbs.bbsNo}" style="cursor: pointer;">
             <td th:text="${bbs.bbsNo}"><input type="hidden" th:value="${bbs.bbsId}"></td>
             <td><span th:text="${bbs.bbsTitle}"></span>&nbsp;&nbsp;<img th:if="${bbs.newTime < masterVO.bbsNewHour}" th:src="@{/img/new.jpg}"></td>
             <td th:text="${bbs.bbsWtime}"></td>
@@ -46,7 +46,7 @@
             row.addEventListener('click', function () {
                 const bbsId = row.getAttribute('data-bbs-id');
                 const bbsNo = row.getAttribute('data-bbs-no');
-                location.href = `/bbs/bbs_view.page/${bbsId}/${bbsNo}`;
+                location.href = `/bbs/bbs_view.page/` + bbsId + '/' + bbsNo;
             });
         });
     });
