@@ -116,7 +116,7 @@ public class MemberController {
 //        if (authentication == null || !authentication.isAuthenticated()) {
 //            List<Menu> assignedMenus = new ArrayList<>();
 //            model.addAttribute("assignedMenus", assignedMenus);
-//            return "/member_main2";
+//            return "/member_main";
 //        }
 //        List<String> roles = authentication.getAuthorities().stream()
 //                .map(GrantedAuthority::getAuthority)
@@ -128,7 +128,7 @@ public class MemberController {
 //        if (roleId.equals("ANONYMOUS")) {
 //            List<Menu> assignedMenus = new ArrayList<>();
 //            model.addAttribute("assignedMenus", assignedMenus);
-//            return "/member_main2";
+//            return "/member_main";
 //        }
 //        System.out.println(roleId);
 //
@@ -136,7 +136,7 @@ public class MemberController {
 //        List<Menu> assignedMenus = role.getMenuList();
 //        model.addAttribute("assignedMenus", assignedMenus);
 
-        return "/member_main2";
+        return "/member_main";
     }
 
     @RequestMapping(value = "/top-menu.page")

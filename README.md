@@ -239,6 +239,7 @@ nohup java -jar jenkins.war --httpPort=8081 &
             }
           }
         }
+        
         ```
 * 만든 pipeline - 구성에 들어가면 됌.
 * 지금 빌드
