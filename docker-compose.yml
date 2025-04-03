@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  boot-study:
+    container_name: boot-study
+    image: harbor.sjkang.com:5443/my-app/boot-study:v1.0
+    ports:
+      - "38081:8080"
