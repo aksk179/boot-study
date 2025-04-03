@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/boot-study-0.0.1-SNAPSHOT-exec.jar app.jar
 
 # 4. 컨테이너 내부에서 사용할 포트 지정
-EXPOSE 38080
+EXPOSE 8080
 
 # 5. 애플리케이션 실행 명령어
 ENTRYPOINT ["java", "-jar", "app.jar"]
