@@ -244,6 +244,8 @@ nohup java -jar jenkins.war --httpPort=8081 &
 * 만든 pipeline - 구성에 들어가면 됌.
 * 지금 빌드
 
+* jenkins-webhook 설정 중..
+
 
 ### SQL
 * 게시글 답글 기능
