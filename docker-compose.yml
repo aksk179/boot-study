@@ -5,4 +5,4 @@ services:
     container_name: boot-study
     image: harbor.sjkang.com:5443/my-app/boot-study:v1.0
     ports:
-      - "38081:8080"
+      - "39090:8080"
